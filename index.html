@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MPI Berpikir Komputasional</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+* { font-family: 'Nunito', sans-serif; }
+html, body { height: 100%; margin: 0; overflow: hidden; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(59,130,246,0.5); }
+  50% { box-shadow: 0 0 40px rgba(59,130,246,0.8); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes confetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(400px) rotate(720deg); opacity: 0; }
+}
+
+.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+.animate-pulse-glow { animation: pulse-glow 2s infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-slide-in { animation: slideIn 0.4s ease-out forwards; }
+
+.btn-hover:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(59,130,246,0.4); }
+.btn-hover:active { transform: scale(0.97); }
+.btn-hover { transition: all 0.2s ease; }
+
+.tab-active { background: #2563eb; color: white; }
+.tab-inactive { background: #e2e8f0; color: #475569; }
+
+.drag-word { cursor: grab; user-select: none; }
+.drag-word:active { cursor: grabbing; }
+.drop-zone { min-height: 36px; border: 2px dashed #93c5fd; border-radius: 8px; }
+.drop-zone.drag-over { background: #dbeafe; border-color: #2563eb; }
+
+.progress-bar { transition: width 0.5s ease; }
+
+.confetti-piece {
+  position: fixed; width: 10px; height: 10px; top: -10px;
+  animation: confetti 3s ease-out forwards;
+}
+</style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white overflow-auto">
+  <div id="app" class="h-full w-full relative overflow-auto"><!-- SPLASH SCREEN -->
+   <div id="splash-screen" class="h-full w-full flex flex-col items-center justify-center p-6 text-center">
+    <div class="animate-float mb-6">
+     <div class="w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg shadow-yellow-400/50">
+      <svg width="48" height="48" viewbox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="2">
+       <circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+      </svg>
+     </div>
+    </div>
+    <h1 class="text-3xl md:text-5xl font-black mb-3 animate-fade-in-up" style="animation-delay:0.2s;opacity:0">BERPIKIR</h1>
+    <h2 class="text-xl md:text-3xl font-bold text-blue-200 mb-2 animate-fade-in-up" style="animation-delay:0.4s;opacity:0">KOMPUTASIONAL</h2>
+    <p class="text-lg text-blue-300 mb-2 animate-fade-in-up" style="animation-delay:0.6s;opacity:0">Informatika Kelas X</p>
+    <h3 class="text-2xl md:text-3xl font-extrabold text-yellow-300 mb-8 animate-fade-in-up" style="animation-delay:0.8s;opacity:0">Pemecahan Masalah</h3><button onclick="showScreen('main-menu')" class="btn-hover animate-pulse-glow bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-10 rounded-full text-xl animate-fade-in-up" style="animation-delay:1s;opacity:0"> 🚀 MULAI </button>
+    <p class="mt-8 text-blue-400 text-sm animate-fade-in-up" style="animation-delay:1.2s;opacity:0">Pengembang: Suci Mega Dian Sari | 2026</p>
+   </div><!-- MAIN MENU -->
+   <div id="main-menu" class="h-full w-full hidden flex-col items-center justify-center p-6">
+    <h2 class="text-3xl font-black mb-8 text-center">📚 Menu Utama</h2>
+    <div class="grid grid-cols-2 gap-4 max-w-md w-full mb-8"><button onclick="showScreen('beranda')" class="btn-hover bg-gradient-to-br from-blue-500 to-blue-700 p-6 rounded-2xl flex flex-col items-center gap-2 shadow-lg"> <i data-lucide="home" class="w-10 h-10"></i><span class="font-bold">BERANDA</span> </button> <button onclick="showScreen('materi')" class="btn-hover bg-gradient-to-br from-green-500 to-green-700 p-6 rounded-2xl flex flex-col items-center gap-2 shadow-lg"> <i data-lucide="book-open" class="w-10 h-10"></i><span class="font-bold">MATERI</span> </button> <button onclick="showScreen('simulasi')" class="btn-hover bg-gradient-to-br from-purple-500 to-purple-700 p-6 rounded-2xl flex flex-col items-center gap-2 shadow-lg"> <i data-lucide="flask-round" class="w-10 h-10"></i><span class="font-bold">SIMULASI</span> </button> <button onclick="showScreen('kuis')" class="btn-hover bg-gradient-to-br from-orange-500 to-orange-700 p-6 rounded-2xl flex flex-col items-center gap-2 shadow-lg"> <i data-lucide="gamepad-2" class="w-10 h-10"></i><span class="font-bold">KUIS</span> </button>
+    </div><!-- Settings -->
+    <div class="bg-white/10 backdrop-blur rounded-xl p-4 max-w-md w-full">
+     <div class="flex items-center justify-between mb-3"><span class="font-semibold flex items-center gap-2"><i data-lucide="music" class="w-5 h-5"></i> Musik</span> <button id="music-toggle" onclick="toggleMusic()" class="btn-hover bg-blue-500 px-4 py-1 rounded-full text-sm font-bold">ON</button>
+     </div>
+     <div class="flex items-center gap-3"><i data-lucide="volume-2" class="w-5 h-5"></i> <input type="range" id="volume-slider" min="0" max="100" value="50" class="flex-1 accent-blue-500" oninput="setVolume(this.value)">
+     </div>
+    </div>
+   </div><!-- BERANDA -->
+   <div id="beranda" class="h-full w-full hidden overflow-auto p-6 pt-16">
+    <div class="max-w-2xl mx-auto">
+     <h2 class="text-3xl font-black mb-6 text-center">🏠 Beranda</h2>
+     <div class="bg-white/10 backdrop-blur rounded-2xl p-6 mb-4">
+      <h3 class="text-xl font-bold text-yellow-300 mb-3">Selamat Datang!</h3>
+      <p class="text-blue-100 leading-relaxed mb-4">Media Pembelajaran Interaktif ini dirancang untuk membantu siswa Kelas X memahami <strong class="text-yellow-300">Berpikir Komputasional</strong> dan kemampuan memecahkan masalah secara sistematis.</p>
+      <h4 class="font-bold text-lg mb-2">🎯 Tujuan Pembelajaran:</h4>
+      <p class="text-blue-100 mb-4">Siswa dapat memecahkan masalah menggunakan pendekatan berpikir komputasional meliputi: dekomposisi, pengenalan pola, abstraksi, dan algoritma.</p>
+      <h4 class="font-bold text-lg mb-2">📋 Petunjuk Penggunaan:</h4>
+      <ul class="text-blue-100 space-y-1 list-disc list-inside">
+       <li>Pelajari konsep di menu <strong>MATERI</strong></li>
+       <li>Praktik pemecahan masalah di menu <strong>SIMULASI</strong></li>
+       <li>Uji kemampuan di menu <strong>KUIS</strong></li>
+      </ul>
+     </div>
+     <div class="bg-white/10 backdrop-blur rounded-2xl p-4 text-center text-blue-300 text-sm">
+      Pengembang: <strong>Suci Mega Dian Sari</strong> | Tahun 2026
+     </div>
+    </div>
+   </div><!-- MATERI -->
+   <div id="materi" class="h-full w-full hidden overflow-auto p-6 pt-16">
+    <div class="max-w-2xl mx-auto">
+     <h2 class="text-3xl font-black mb-6 text-center">📖 Materi</h2>
+     <div class="flex flex-wrap gap-2 mb-4 justify-center" id="materi-tabs"></div>
+     <div id="materi-content" class="bg-white/10 backdrop-blur rounded-2xl p-6 min-h-[300px]"></div>
+    </div>
+   </div><!-- SIMULASI -->
+   <div id="simulasi" class="h-full w-full hidden overflow-auto p-6 pt-16">
+    <div class="max-w-2xl mx-auto">
+     <h2 class="text-3xl font-black mb-4 text-center">🔬 Simulasi</h2>
+     <div id="sim-name-input" class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center mb-4">
+      <p class="mb-3 font-semibold">Masukkan nama Anda untuk memulai:</p><input type="text" id="student-name" placeholder="Nama Lengkap" class="w-full max-w-xs px-4 py-3 rounded-lg text-gray-900 font-semibold text-center focus:outline-none focus:ring-4 focus:ring-blue-400" autocomplete="off" spellcheck="false"> <br><button onclick="startSimulation()" class="btn-hover mt-4 bg-blue-500 hover:bg-blue-600 font-bold py-3 px-8 rounded-full">Mulai Simulasi</button>
+     </div>
+     <div id="sim-area" class="hidden">
+      <div class="flex justify-between items-center mb-3"><span id="sim-progress" class="text-sm text-blue-200">Soal 1/10</span> <span id="sim-score-display" class="text-sm text-yellow-300 font-bold">Skor: 0</span>
+      </div>
+      <div class="w-full bg-white/20 rounded-full h-3 mb-4">
+       <div id="sim-bar" class="progress-bar bg-blue-400 h-3 rounded-full" style="width:10%"></div>
+      </div>
+      <div id="sim-question" class="bg-white/10 backdrop-blur rounded-2xl p-6 min-h-[200px]"></div>
+     </div>
+     <div id="sim-result" class="hidden bg-white/10 backdrop-blur rounded-2xl p-6 text-center"></div>
+    </div>
+   </div><!-- KUIS (Games) -->
+   <div id="kuis" class="h-full w-full hidden overflow-auto p-6 pt-16">
+    <div class="max-w-2xl mx-auto">
+     <h2 class="text-3xl font-black mb-6 text-center">🎮 Kuis Games</h2>
+     <div id="kuis-menu" class="grid grid-cols-2 gap-4"><button onclick="startGame(1)" class="btn-hover bg-gradient-to-br from-pink-500 to-rose-700 p-5 rounded-2xl text-center shadow-lg">
+       <div class="text-3xl mb-2">
+        🧠
+       </div><span class="font-bold text-sm">Tebak Sifat</span><p class="text-xs text-pink-200 mt-1">5 Level</p></button> <button onclick="startGame(2)" class="btn-hover bg-gradient-to-br from-cyan-500 to-teal-700 p-5 rounded-2xl text-center shadow-lg">
+       <div class="text-3xl mb-2">
+        ⚡
+       </div><span class="font-bold text-sm">Kilat Jawab</span><p class="text-xs text-cyan-200 mt-1">5 Level</p></button> <button onclick="startGame(3)" class="btn-hover bg-gradient-to-br from-amber-500 to-orange-700 p-5 rounded-2xl text-center shadow-lg">
+       <div class="text-3xl mb-2">
+        🎯
+       </div><span class="font-bold text-sm">Cocokkan</span><p class="text-xs text-amber-200 mt-1">3 Level</p></button> <button onclick="startGame(4)" class="btn-hover bg-gradient-to-br from-violet-500 to-purple-700 p-5 rounded-2xl text-center shadow-lg">
+       <div class="text-3xl mb-2">
+        🏆
+       </div><span class="font-bold text-sm">Tantangan Akhir</span><p class="text-xs text-violet-200 mt-1">5 Level</p></button>
+     </div>
+     <div id="game-area" class="hidden"></div>
+    </div>
+   </div><!-- CERTIFICATE -->
+   <div id="certificate" class="h-full w-full hidden overflow-auto p-6 pt-16">
+    <div class="max-w-lg mx-auto">
+     <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-3xl p-8 text-center text-gray-800 shadow-2xl border-4 border-yellow-400">
+      <div class="text-5xl mb-4">
+       🏆
+      </div>
+      <h2 class="text-2xl font-black text-blue-800 mb-2">SERTIFIKAT PENCAPAIAN</h2>
+      <p class="text-gray-600 mb-4">Diberikan kepada:</p>
+      <h3 id="cert-name" class="text-3xl font-black text-blue-900 mb-4 border-b-2 border-yellow-400 pb-3"></h3>
+      <p class="text-gray-700 mb-2">Telah berhasil menyelesaikan</p>
+      <p class="font-bold text-blue-800 mb-4">Simulasi Berpikir Komputasional</p>
+      <p id="cert-score" class="text-lg font-bold text-green-700 mb-4"></p>
+      <p class="text-sm text-gray-500">Pengembang: Suci Mega Dian Sari | 2026</p>
+     </div><button onclick="showScreen('main-menu')" class="btn-hover mt-6 w-full bg-blue-500 hover:bg-blue-600 font-bold py-3 rounded-full">Kembali ke Menu</button>
+    </div>
+   </div><!-- HOME BUTTON --> <button id="home-btn" onclick="showScreen('main-menu')" class="hidden fixed top-4 left-4 z-50 btn-hover bg-blue-600 hover:bg-blue-700 p-2 rounded-full shadow-lg"> <i data-lucide="home" class="w-6 h-6"></i> </button> <!-- Toast -->
+   <div id="toast" class="fixed top-4 right-4 z-50 hidden bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg font-semibold text-sm"></div>
+  </div>
+  <script>
+// ===== STATE =====
+let currentScreen = 'splash-screen';
+let studentName = '';
+let musicOn = true;
+let audioCtx = null;
+let simScore = 0;
+let simCurrent = 0;
+let currentData = [];
+
+// ===== AUDIO (Web Audio API) =====
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playClick() {
+  try {
+    const ctx = getAudioCtx();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    const vol = document.getElementById('volume-slider').value / 100;
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = 800; o.type = 'sine';
+    g.gain.setValueAtTime(vol * 0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    o.start(); o.stop(ctx.currentTime + 0.1);
+  } catch(e) {}
+}
+
+function playSuccess() {
+  try {
+    const ctx = getAudioCtx();
+    const vol = document.getElementById('volume-slider').value / 100;
+    [523, 659, 784].forEach((f, i) => {
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = f; o.type = 'sine';
+      g.gain.setValueAtTime(vol * 0.2, ctx.currentTime + i * 0.15);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.3);
+      o.start(ctx.currentTime + i * 0.15); o.stop(ctx.currentTime + i * 0.15 + 0.3);
+    });
+  } catch(e) {}
+}
+
+function playWrong() {
+  try {
+    const ctx = getAudioCtx();
+    const vol = document.getElementById('volume-slider').value / 100;
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = 200; o.type = 'sawtooth';
+    g.gain.setValueAtTime(vol * 0.2, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    o.start(); o.stop(ctx.currentTime + 0.3);
+  } catch(e) {}
+}
+
+let bgOsc = null, bgGain = null;
+function startBgMusic() {
+  if (bgOsc) return;
+  try {
+    const ctx = getAudioCtx();
+    bgGain = ctx.createGain();
+    const vol = document.getElementById('volume-slider').value / 100;
+    bgGain.gain.value = vol * 0.05;
+    bgGain.connect(ctx.destination);
+    bgOsc = ctx.createOscillator();
+    bgOsc.type = 'sine'; bgOsc.frequency.value = 261;
+    bgOsc.connect(bgGain); bgOsc.start();
+  } catch(e) {}
+}
+
+function stopBgMusic() {
+  if (bgOsc) { try { bgOsc.stop(); } catch(e) {} bgOsc = null; bgGain = null; }
+}
+
+function toggleMusic() {
+  musicOn = !musicOn;
+  document.getElementById('music-toggle').textContent = musicOn ? 'ON' : 'OFF';
+  if (musicOn) startBgMusic(); else stopBgMusic();
+}
+
+function setVolume(v) {
+  if (bgGain) bgGain.gain.value = (v / 100) * 0.05;
+}
+
+// ===== NAVIGATION =====
+function showScreen(id) {
+  playClick();
+  document.querySelectorAll('#app > div[id]').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
+  const target = document.getElementById(id);
+  if (target) { target.classList.remove('hidden'); if (id === 'splash-screen' || id === 'main-menu') target.classList.add('flex'); }
+  const homeBtn = document.getElementById('home-btn');
+  homeBtn.classList.toggle('hidden', id === 'splash-screen' || id === 'main-menu');
+  currentScreen = id;
+  if (musicOn && id !== 'splash-screen') startBgMusic();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), 2000);
+}
+
+// ===== MATERI =====
+const materiData = [
+  { title: "Memahami Masalah", icon: "🔍", content: `<h3 class="text-xl font-bold text-yellow-300 mb-3">1. Memahami & Menganalisis Masalah</h3><p class="text-blue-100 leading-relaxed mb-3">Langkah pertama berpikir komputasional adalah memahami masalah secara mendalam.</p><div class="bg-blue-800/50 p-4 rounded-lg mb-3"><p class="font-bold text-yellow-200 mb-2">Kemampuan yang dikembangkan:</p><ul class="text-blue-100 space-y-1 list-disc list-inside"><li>Mengidentifikasi permasalahan dengan jelas</li><li>Menentukan informasi yang penting</li><li>Memahami hubungan antarbagian masalah</li></ul></div><p class="text-blue-100"><strong class="text-yellow-200">Contoh:</strong> Saat membuat aplikasi, pahami kebutuhan pengguna, fitur yang diperlukan, dan batasan sistem.</p>` },
+  { title: "Dekomposisi Masalah", icon: "🔧", content: `<h3 class="text-xl font-bold text-yellow-300 mb-3">2. Melakukan Dekomposisi Masalah</h3><p class="text-blue-100 leading-relaxed mb-3">Memecah masalah besar menjadi bagian-bagian kecil yang lebih mudah diselesaikan.</p><div class="bg-blue-800/50 p-4 rounded-lg mb-3"><p class="font-bold text-yellow-200 mb-2">Proses Dekomposisi:</p><ul class="text-blue-100 space-y-1 list-disc list-inside"><li>Identifikasi masalah utama</li><li>Bagi menjadi sub-masalah yang lebih kecil</li><li>Tentukan prioritas dan urutan penyelesaian</li><li>Selesaikan setiap bagian secara terpisah</li></ul></div><p class="text-blue-100"><strong class="text-yellow-200">Manfaat:</strong> Masalah kompleks menjadi lebih mudah dikelola dan diselesaikan.</p>` },
+  { title: "Pengenalan Pola", icon: "🎨", content: `<h3 class="text-xl font-bold text-yellow-300 mb-3">3. Mengenali Pola (Pattern Recognition)</h3><p class="text-blue-100 leading-relaxed mb-3">Menemukan kesamaan atau pola dari berbagai permasalahan untuk membuat solusi lebih efektif.</p><div class="bg-blue-800/50 p-4 rounded-lg mb-3"><p class="font-bold text-yellow-200 mb-2">Apa yang dicari dalam pola:</p><ul class="text-blue-100 space-y-1 list-disc list-inside"><li>Kesamaan struktur antar masalah</li><li>Pola perulangan atau urutan</li><li>Komponen yang dapat digunakan kembali</li></ul></div><p class="text-blue-100"><strong class="text-yellow-200">Manfaat:</strong> Menghindari pekerjaan berulang, menemukan solusi yang lebih cepat dan efisien.</p>` },
+  { title: "Abstraksi", icon: "📦", content: `<h3 class="text-xl font-bold text-yellow-300 mb-3">4. Melakukan Abstraksi</h3><p class="text-blue-100 leading-relaxed mb-3">Mengambil informasi yang penting dan mengabaikan detail yang tidak diperlukan untuk fokus pada solusi.</p><div class="bg-blue-800/50 p-4 rounded-lg mb-3"><p class="font-bold text-yellow-200 mb-2">Prinsip Abstraksi:</p><ul class="text-blue-100 space-y-1 list-disc list-inside"><li>Fokus pada hal yang relevan saja</li><li>Abaikan detail yang tidak perlu</li><li>Sederhanakan masalah tanpa mengurangi makna</li><li>Buat model yang mudah dipahami</li></ul></div><p class="text-blue-100"><strong class="text-yellow-200">Contoh:</strong> Saat membuat GPS, fokus pada lokasi dan rute, abaikan warna mobil pengguna.</p>` },
+  { title: "Algoritma", icon: "⚙️", content: `<h3 class="text-xl font-bold text-yellow-300 mb-3">Algoritma dalam Berpikir Komputasional</h3><p class="text-blue-100 leading-relaxed mb-3">Algoritma adalah urutan langkah-langkah logis dan terstruktur untuk menyelesaikan masalah.</p><div class="bg-blue-800/50 p-4 rounded-lg mb-3"><p class="font-bold text-yellow-200 mb-2">Karakteristik Algoritma Baik:</p><ul class="text-blue-100 space-y-1 list-disc list-inside"><li>Jelas dan terukur</li><li>Dapat diikuti siapa saja</li><li>Menghasilkan solusi yang tepat</li><li>Efisien dalam waktu dan sumber daya</li></ul></div><p class="text-blue-100"><strong class="text-yellow-200">Contoh:</strong> Langkah-langkah memasak, panduan menginstal program, prosedur menghitung rata-rata.</p>` },
+  { title: "Pseudocode", icon: "📝", content: `<h3 class="text-xl font-bold text-yellow-300 mb-3">Pseudocode - Menulis Algoritma</h3><p class="text-blue-100 leading-relaxed mb-3">Pseudocode adalah penulisan algoritma dalam bahasa yang mudah dipahami sebelum diubah ke kode program.</p><div class="bg-blue-800/50 p-4 rounded-lg mb-3"><p class="font-bold text-yellow-200 mb-2">Contoh Pseudocode:</p><p class="text-blue-100 font-mono text-sm">READ nilai<br/>IF nilai >= 70 THEN<br/>&nbsp;&nbsp;OUTPUT "LULUS"<br/>ELSE<br/>&nbsp;&nbsp;OUTPUT "TIDAK LULUS"<br/>END IF</p></div><p class="text-blue-100"><strong class="text-yellow-200">Keuntungan:</strong> Lebih mudah dipahami sebelum menulis kode program asli.</p>` },
+  { title: "Flowchart", icon: "📊", content: `<h3 class="text-xl font-bold text-yellow-300 mb-3">Flowchart - Visualisasi Algoritma</h3><p class="text-blue-100 leading-relaxed mb-3">Flowchart adalah diagram visual yang menunjukkan alur logika dan keputusan dalam algoritma.</p><div class="bg-blue-800/50 p-4 rounded-lg mb-3"><p class="font-bold text-yellow-200 mb-2">Simbol Flowchart:</p><ul class="text-blue-100 space-y-1 list-disc list-inside"><li><strong>●</strong> (Oval) = Awal/Akhir program</li><li><strong>▭</strong> (Persegi) = Proses/Aksi/Input-Output</li><li><strong>◇</strong> (Belah ketupat) = Keputusan/Kondisi (IF-THEN)</li><li><strong>→</strong> (Panah) = Alur/Aliran program</li></ul></div><p class="text-blue-100"><strong class="text-yellow-200">Manfaat:</strong> Memvisualisasikan logika sehingga lebih mudah dipahami dan dikomunikasikan.</p>` }
+];
+
+function initMateri() {
+  const tabs = document.getElementById('materi-tabs');
+  tabs.innerHTML = materiData.map((m, i) => `<button onclick="showMateri(${i})" class="btn-hover px-4 py-2 rounded-full text-sm font-bold ${i === 0 ? 'tab-active' : 'tab-inactive'}" id="mtab-${i}">${m.icon} ${m.title}</button>`).join('');
+  showMateri(0);
+}
+
+function showMateri(idx) {
+  playClick();
+  document.querySelectorAll('[id^="mtab-"]').forEach((el, i) => { el.className = el.className.replace(/tab-active|tab-inactive/g, '') + (i === idx ? ' tab-active' : ' tab-inactive'); el.classList.add('btn-hover', 'px-4', 'py-2', 'rounded-full', 'text-sm', 'font-bold'); });
+  document.getElementById('materi-content').innerHTML = materiData[idx].content;
+}
+
+// ===== SIMULASI (10 soal) =====
+const simQuestions = [
+  { type: 'mc', q: 'Saat memahami masalah, hal yang PALING PENTING adalah...', opts: ['Mencari solusi dengan cepat', 'Mengidentifikasi permasalahan dan informasi penting', 'Membuat program langsung', 'Mencari solusi dari internet'], ans: 1 },
+  { type: 'mc', q: 'Langkah pertama dalam memecahkan masalah kompleks adalah...', opts: ['Menulis kode', 'Memahami dan menganalisis masalah', 'Menguji solusi', 'Membuat dokumentasi'], ans: 1 },
+  { type: 'drag', q: 'Melengkapi: ___ adalah memecah masalah besar menjadi bagian-bagian kecil.', words: ['Dekomposisi', 'Pengenalan Pola', 'Abstraksi'], ans: 'Dekomposisi' },
+  { type: 'mc', q: 'Manfaat utama dekomposisi masalah adalah...', opts: ['Memperberat masalah', 'Membuat masalah lebih mudah dikelola dan diselesaikan', 'Menambah kompleksitas', 'Menghilangkan masalah'], ans: 1 },
+  { type: 'mc', q: 'Pengenalan pola membantu dalam...', opts: ['Menambah jumlah masalah', 'Menghindari pekerjaan berulang dan menemukan solusi efisien', 'Memperlambat proses', 'Mengubah masalah'], ans: 1 },
+  { type: 'mark', q: 'Pilih yang merupakan bagian dari berpikir komputasional:', words: ['Memahami masalah', 'Bermain game', 'Dekomposisi', 'Tidur siang', 'Pengenalan pola', 'Menonton film'], ans: ['Memahami masalah', 'Dekomposisi', 'Pengenalan pola'] },
+  { type: 'mc', q: 'Abstraksi berarti...', opts: ['Membuat sesuatu menjadi abstrak', 'Fokus pada hal penting, abaikan detail tidak perlu', 'Menambah detail', 'Membuat segalanya rumit'], ans: 1 },
+  { type: 'drag', q: 'Lengkapi: Dalam abstraksi, kita fokus pada ___ dan mengabaikan detail tidak diperlukan.', words: ['semuanya', 'informasi penting', 'kesalahan'], ans: 'informasi penting' },
+  { type: 'mc', q: 'Hubungan antarbagian masalah penting dipahami untuk...', opts: ['Mengaburkan masalah', 'Memahami konteks dan penyelesaian menyeluruh', 'Menambah kebingungan', 'Mengurangi wawasan'], ans: 1 },
+  { type: 'mark', q: 'Pilih pernyataan yang BENAR tentang berpikir komputasional:', words: ['Hanya untuk programmer', 'Berguna untuk memecahkan berbagai masalah', 'Membuat pekerjaan lebih rumit', 'Mempercepat penyelesaian dengan metode sistematis', 'Tidak penting'], ans: ['Berguna untuk memecahkan berbagai masalah', 'Mempercepat penyelesaian dengan metode sistematis'] }
+];
+
+function startSimulation() {
+  const nameInput = document.getElementById('student-name');
+  if (!nameInput.value.trim()) { showToast('Masukkan nama Anda!'); return; }
+  studentName = nameInput.value.trim();
+  simScore = 0; simCurrent = 0;
+  document.getElementById('sim-name-input').classList.add('hidden');
+  document.getElementById('sim-area').classList.remove('hidden');
+  document.getElementById('sim-result').classList.add('hidden');
+  renderSimQuestion();
+}
+
+function renderSimQuestion() {
+  if (simCurrent >= simQuestions.length) { finishSimulation(); return; }
+  const s = simQuestions[simCurrent];
+  document.getElementById('sim-progress').textContent = `Soal ${simCurrent + 1}/10`;
+  document.getElementById('sim-score-display').textContent = `Skor: ${simScore}`;
+  document.getElementById('sim-bar').style.width = `${(simCurrent + 1) * 10}%`;
+  const area = document.getElementById('sim-question');
+
+  if (s.type === 'mc') {
+    area.innerHTML = `<p class="font-bold mb-4">${s.q}</p><div class="space-y-2">${s.opts.map((o, i) => `<button onclick="answerSim(${i})" class="btn-hover w-full text-left bg-white/10 hover:bg-white/20 p-3 rounded-lg font-semibold">${o}</button>`).join('')}</div>`;
+  } else if (s.type === 'drag') {
+    area.innerHTML = `<p class="font-bold mb-4">${s.q}</p><div class="drop-zone p-3 mb-4 text-center text-blue-300" id="drop-target" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">Letakkan jawaban di sini</div><div class="flex gap-2 flex-wrap justify-center">${s.words.map(w => `<span class="drag-word btn-hover bg-blue-500 px-4 py-2 rounded-lg font-bold cursor-grab" draggable="true" ondragstart="handleDragStart(event)">${w}</span>`).join('')}</div>`;
+  } else if (s.type === 'mark') {
+    area.innerHTML = `<p class="font-bold mb-4">${s.q}</p><div class="flex gap-2 flex-wrap" id="mark-words">${s.words.map(w => `<button onclick="toggleMark(this)" class="btn-hover bg-white/10 px-4 py-2 rounded-lg font-semibold" data-word="${w}">${w}</button>`).join('')}</div><button onclick="submitMark()" class="btn-hover mt-4 bg-green-500 hover:bg-green-600 px-6 py-2 rounded-full font-bold">Cek Jawaban</button>`;
+  }
+}
+
+function answerSim(idx) {
+  const s = simQuestions[simCurrent];
+  if (idx === s.ans) { simScore += 10; playSuccess(); showToast('✅ Benar!'); }
+  else { playWrong(); showToast('❌ Salah!'); }
+  simCurrent++; setTimeout(renderSimQuestion, 800);
+}
+
+function handleDragStart(e) { e.dataTransfer.setData('text', e.target.textContent); }
+function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function handleDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function handleDrop(e) {
+  e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+  const word = e.dataTransfer.getData('text');
+  e.currentTarget.textContent = word;
+  const s = simQuestions[simCurrent];
+  if (word === s.ans) { simScore += 10; playSuccess(); showToast('✅ Benar!'); }
+  else { playWrong(); showToast('❌ Salah!'); }
+  simCurrent++; setTimeout(renderSimQuestion, 800);
+}
+
+function toggleMark(btn) {
+  playClick();
+  btn.classList.toggle('bg-yellow-500'); btn.classList.toggle('bg-white/10');
+}
+
+function submitMark() {
+  const s = simQuestions[simCurrent];
+  const selected = [...document.querySelectorAll('#mark-words .bg-yellow-500')].map(b => b.dataset.word);
+  const correct = s.ans.every(a => selected.includes(a)) && selected.length === s.ans.length;
+  if (correct) { simScore += 10; playSuccess(); showToast('✅ Benar!'); }
+  else { playWrong(); showToast('❌ Salah!'); }
+  simCurrent++; setTimeout(renderSimQuestion, 800);
+}
+
+async function finishSimulation() {
+  document.getElementById('sim-area').classList.add('hidden');
+  const resultDiv = document.getElementById('sim-result');
+  resultDiv.classList.remove('hidden');
+  resultDiv.innerHTML = `<div class="text-5xl mb-4">${simScore >= 70 ? '🎉' : '💪'}</div><h3 class="text-2xl font-black mb-2">${studentName}</h3><p class="text-xl mb-2">Skor Anda: <strong class="text-yellow-300">${simScore}/100</strong></p><p class="text-blue-200 mb-4">${simScore >= 70 ? 'Luar biasa! Anda memahami sifat-sifat cahaya dengan baik!' : 'Terus belajar! Anda bisa lebih baik lagi!'}</p><button onclick="showCertificate()" class="btn-hover bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-6 rounded-full">🏆 Lihat Sertifikat</button>`;
+
+  // Save to Canva Sheet
+  if (window.dataSdk) {
+    const result = await window.dataSdk.create({
+      student_name: studentName,
+      quiz_score: 0,
+      simulation_score: simScore,
+      completed_at: new Date().toISOString()
+    });
+    if (result.isOk) showToast('Data tersimpan!');
+  }
+}
+
+function showCertificate() {
+  playSuccess();
+  document.getElementById('cert-name').textContent = studentName;
+  document.getElementById('cert-score').textContent = `Skor: ${simScore}/100`;
+  showScreen('certificate');
+  spawnConfetti();
+}
+
+function spawnConfetti() {
+  const colors = ['#fbbf24', '#3b82f6', '#ef4444', '#10b981', '#8b5cf6'];
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.left = Math.random() * 100 + '%';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = Math.random() * 2 + 's';
+    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
+// ===== KUIS GAMES =====
+const gameQuestions = {
+  1: [ // Tebak Konsep
+    { q: 'Kemampuan mengidentifikasi permasalahan dan informasi penting', a: 'Memahami Masalah' },
+    { q: 'Memecah masalah besar menjadi bagian-bagian kecil', a: 'Dekomposisi' },
+    { q: 'Menemukan kesamaan atau pola dari berbagai permasalahan', a: 'Pengenalan Pola' },
+    { q: 'Fokus pada informasi penting, abaikan detail tidak perlu', a: 'Abstraksi' },
+    { q: 'Hubungan dan alur antar sub-masalah dalam pemecahan masalah', a: 'Integrasi' }
+  ],
+  2: [ // Kilat Jawab
+    { q: 'Kemampuan pertama dalam berpikir komputasional adalah...', opts: ['Mencari solusi', 'Memahami masalah', 'Membuat kode'], a: 1 },
+    { q: 'Dekomposisi membuat masalah menjadi...', opts: ['Lebih rumit', 'Lebih mudah dikelola', 'Hilang'], a: 1 },
+    { q: 'Abstraksi adalah proses...', opts: ['Menambah detail', 'Fokus pada hal penting', 'Menghilangkan masalah'], a: 1 },
+    { q: 'Pengenalan pola membantu menghindari...', opts: ['Kesuksesan', 'Pekerjaan berulang', 'Kemajuan'], a: 1 },
+    { q: 'Berpikir komputasional digunakan untuk...', opts: ['Hanya coding', 'Memecahkan berbagai masalah', 'Bermain game'], a: 1 }
+  ],
+  3: [ // Cocokkan
+    { pairs: [['Memahami Masalah', 'Identifikasi informasi'], ['Dekomposisi', 'Pecah masalah'], ['Abstraksi', 'Fokus penting']] },
+    { pairs: [['Pengenalan Pola', 'Cari kesamaan'], ['Algoritma', 'Urutan langkah'], ['Pseudocode', 'Bahasa mudah']] },
+    { pairs: [['Flowchart', 'Diagram visual'], ['Sub-masalah', 'Bagian kecil'], ['Efisiensi', 'Hemat waktu']] }
+  ],
+  4: [ // Tantangan Akhir
+    { q: 'Saat menganalisis masalah, hal penting adalah memahami...', opts: ['Warna masalah', 'Hubungan antarbagian masalah', 'Jumlah orang', 'Waktu saja'], a: 1 },
+    { q: 'Dekomposisi adalah teknik untuk...', opts: ['Menggabung masalah', 'Memecah masalah kompleks', 'Menghapus masalah', 'Mengabaikan masalah'], a: 1 },
+    { q: 'Dalam abstraksi, informasi yang tidak perlu adalah...', opts: ['Informasi penting', 'Informasi detail tidak relevan', 'Semua informasi', 'Tidak ada informasi'], a: 1 },
+    { q: 'Pengenalan pola dapat menghemat waktu dengan cara...', opts: ['Membuat masalah baru', 'Menggunakan kembali solusi sebelumnya', 'Menambah kompleksitas', 'Menghapus data'], a: 1 },
+    { q: 'Tujuan berpikir komputasional adalah...', opts: ['Membuat orang bingung', 'Memecahkan masalah dengan metode sistematis', 'Menambah pekerjaan', 'Mengabaikan masalah'], a: 1 }
+  ]
+};
+
+let gameType = 0, gameLevel = 0, gameScore = 0;
+
+function startGame(type) {
+  playClick(); gameType = type; gameLevel = 0; gameScore = 0;
+  document.getElementById('kuis-menu').classList.add('hidden');
+  document.getElementById('game-area').classList.remove('hidden');
+  renderGame();
+}
+
+function renderGame() {
+  const area = document.getElementById('game-area');
+  const data = gameQuestions[gameType];
+  if (gameLevel >= data.length) { endGame(); return; }
+
+  if (gameType === 1) {
+    const item = data[gameLevel];
+    const opts = ['Pemantulan', 'Pembiasan', 'Difraksi', 'Interferensi', 'Dispersi', 'Polarisasi'];
+    area.innerHTML = `<div class="bg-white/10 backdrop-blur rounded-2xl p-6"><p class="text-sm text-blue-300 mb-2">Level ${gameLevel + 1}/5</p><p class="font-bold text-lg mb-4">"${item.q}"</p><p class="mb-3 text-blue-200">Sifat cahaya apa ini?</p><div class="grid grid-cols-2 gap-2">${opts.map(o => `<button onclick="checkGame1('${o}')" class="btn-hover bg-white/10 hover:bg-white/20 p-3 rounded-lg font-semibold text-sm">${o}</button>`).join('')}</div></div>`;
+  } else if (gameType === 2) {
+    const item = data[gameLevel];
+    area.innerHTML = `<div class="bg-white/10 backdrop-blur rounded-2xl p-6"><p class="text-sm text-blue-300 mb-2">Level ${gameLevel + 1}/5</p><p class="font-bold text-lg mb-4">${item.q}</p><div class="space-y-2">${item.opts.map((o, i) => `<button onclick="checkGame2(${i})" class="btn-hover w-full text-left bg-white/10 hover:bg-white/20 p-3 rounded-lg font-semibold">${o}</button>`).join('')}</div></div>`;
+  } else if (gameType === 3) {
+    const item = data[gameLevel];
+    const lefts = item.pairs.map(p => p[0]);
+    const rights = [...item.pairs.map(p => p[1])].sort(() => Math.random() - 0.5);
+    area.innerHTML = `<div class="bg-white/10 backdrop-blur rounded-2xl p-6"><p class="text-sm text-blue-300 mb-2">Level ${gameLevel + 1}/3</p><p class="font-bold mb-4">Cocokkan pasangan yang benar:</p><div id="match-area">${lefts.map((l, i) => `<div class="flex items-center gap-2 mb-2"><span class="bg-blue-600 px-3 py-2 rounded-lg font-bold text-sm flex-1 text-center">${l}</span><select onchange="checkMatch()" class="match-sel bg-white/20 px-3 py-2 rounded-lg text-white flex-1" data-left="${l}"><option value="">Pilih...</option>${rights.map(r => `<option value="${r}">${r}</option>`).join('')}</select></div>`).join('')}</div><button onclick="submitMatch()" class="btn-hover mt-3 bg-green-500 px-6 py-2 rounded-full font-bold">Cek</button></div>`;
+  } else if (gameType === 4) {
+    const item = data[gameLevel];
+    area.innerHTML = `<div class="bg-white/10 backdrop-blur rounded-2xl p-6"><p class="text-sm text-blue-300 mb-2">Level ${gameLevel + 1}/5</p><p class="font-bold text-lg mb-4">${item.q}</p><div class="space-y-2">${item.opts.map((o, i) => `<button onclick="checkGame4(${i})" class="btn-hover w-full text-left bg-white/10 hover:bg-white/20 p-3 rounded-lg font-semibold">${o}</button>`).join('')}</div></div>`;
+  }
+}
+
+function checkGame1(ans) {
+  if (ans === gameQuestions[1][gameLevel].a) { gameScore++; playSuccess(); showToast('✅ Benar!'); }
+  else { playWrong(); showToast('❌ Salah! Jawaban: ' + gameQuestions[1][gameLevel].a); }
+  gameLevel++; setTimeout(renderGame, 800);
+}
+function checkGame2(idx) {
+  if (idx === gameQuestions[2][gameLevel].a) { gameScore++; playSuccess(); showToast('✅ Benar!'); }
+  else { playWrong(); showToast('❌ Salah!'); }
+  gameLevel++; setTimeout(renderGame, 800);
+}
+function submitMatch() {
+  const sels = document.querySelectorAll('.match-sel');
+  const item = gameQuestions[3][gameLevel];
+  let correct = 0;
+  sels.forEach(s => {
+    const pair = item.pairs.find(p => p[0] === s.dataset.left);
+    if (pair && pair[1] === s.value) correct++;
+  });
+  if (correct === item.pairs.length) { gameScore++; playSuccess(); showToast('✅ Semua benar!'); }
+  else { playWrong(); showToast(`❌ ${correct}/${item.pairs.length} benar`); }
+  gameLevel++; setTimeout(renderGame, 800);
+}
+function checkGame4(idx) {
+  if (idx === gameQuestions[4][gameLevel].a) { gameScore++; playSuccess(); showToast('✅ Benar!'); }
+  else { playWrong(); showToast('❌ Salah!'); }
+  gameLevel++; setTimeout(renderGame, 800);
+}
+
+function endGame() {
+  const total = gameQuestions[gameType].length;
+  document.getElementById('game-area').innerHTML = `<div class="bg-white/10 backdrop-blur rounded-2xl p-6 text-center"><div class="text-5xl mb-4">${gameScore === total ? '🏆' : '👏'}</div><h3 class="text-2xl font-black mb-2">Game Selesai!</h3><p class="text-xl text-yellow-300 font-bold mb-4">Skor: ${gameScore}/${total}</p><button onclick="backToKuisMenu()" class="btn-hover bg-blue-500 hover:bg-blue-600 font-bold py-3 px-6 rounded-full">Kembali</button></div>`;
+}
+
+function backToKuisMenu() {
+  playClick();
+  document.getElementById('kuis-menu').classList.remove('hidden');
+  document.getElementById('game-area').classList.add('hidden');
+}
+
+// ===== DATA SDK =====
+const dataHandler = {
+  onDataChanged(data) { currentData = data; }
+};
+
+// ===== ELEMENT SDK =====
+const defaultConfig = {
+  background_color: '#1e3a8a',
+  surface_color: '#1e40af',
+  text_color: '#ffffff',
+  primary_action_color: '#3b82f6',
+  secondary_action_color: '#eab308',
+  font_family: 'Nunito',
+  font_size: 16,
+  app_title: 'Media Pembelajaran Interaktif',
+  subject_title: 'Informatika - Berpikir Komputasional',
+  developer_name: 'Suci Mega Dian Sari'
+};
+
+function applyConfig(config) {
+  document.body.style.fontFamily = `${config.font_family || defaultConfig.font_family}, sans-serif`;
+}
+
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => { applyConfig(config); },
+  mapToCapabilities: (config) => ({
+    recolorables: [
+      { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+      { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+      { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+      { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+      { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
+    ],
+    borderables: [],
+    fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+    fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+  }),
+  mapToEditPanelValues: (config) => new Map([
+    ['app_title', config.app_title || defaultConfig.app_title],
+    ['subject_title', config.subject_title || defaultConfig.subject_title],
+    ['developer_name', config.developer_name || defaultConfig.developer_name]
+  ])
+});
+
+// ===== INIT =====
+(async () => {
+  if (window.dataSdk) {
+    await window.dataSdk.init(dataHandler);
+  }
+  initMateri();
+  lucide.createIcons();
+  applyConfig(defaultConfig);
+})();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fe04f5b11ecff7f',t:'MTc3OTE2NDQzNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
